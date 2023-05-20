@@ -16,11 +16,11 @@ export default function LoginDialog(props: LoginDialogProps) {
             <Modal.Body>
                 <Form>
                     <FormGroup>
-                        <Form.Label for="login-input">Login</Form.Label>
+                        <Form.Label htmlFor="login-input">Login</Form.Label>
                         <Form.Control type="text" id="login-input"></Form.Control>
                     </FormGroup>
                     <FormGroup>
-                        <Form.Label for="password-input">Password</Form.Label>
+                        <Form.Label htmlFor="password-input">Password</Form.Label>
                         <Form.Control type="password" id="password-input"></Form.Control>
                     </FormGroup>
                     <Button type="submit" variant="primary">Login</Button>

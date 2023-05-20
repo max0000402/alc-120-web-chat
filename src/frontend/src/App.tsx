@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import './App.css'
 import Button from 'react-bootstrap/Button'
 import Navbar from 'react-bootstrap/Navbar'
@@ -7,6 +7,9 @@ import Nav from 'react-bootstrap/Nav'
 import { Card, Col, Form, FormGroup, ListGroup, Row } from 'react-bootstrap'
 import ChatMembersDialog from './components/ChatMembersDialog'
 import LoginDialog from './components/LoginDialog'
+import { useLazyGetCurrentUserQuery, useLoginMutation } from './services/authService'
+import { useAppDispatch } from './store/hooks'
+import { setToken } from './store/features/auth/authSlice'
 
 function App() {
 
@@ -16,8 +19,24 @@ function App() {
     const handleMemberDialogClose = useCallback(() => setMemberDialogOpen(false), [])
     const handleLoginDialogClose = useCallback(() => setLoginDialogOpen(false), [])
 
+    const dispatch = useAppDispatch()
+    const [login, { isLoading }] = useLoginMutation()
+    const [trigger, result] = useLazyGetCurrentUserQuery()
+
+    useEffect(() => {
+        async function hook() {
+            const token = await login({ login: 'max00', password: 'password' }).unwrap()
+            dispatch(setToken(token.token))
+        }
+
+        hook()
+    }, [])
+
     return (
         <>
+            <Button onClick={() => {
+                trigger().then(data => console.log(data))
+            }}>Click</Button>
             <ChatMembersDialog name="Dialog 1" members={[]} isOpen={isMemberDialogOpen} handleClose={handleMemberDialogClose} />
             <LoginDialog isOpen={isLoginDialogOpen} handleClose={handleLoginDialogClose} />
             <Navbar className="mb-2" bg='light' expand='lg'>
@@ -57,7 +76,7 @@ function App() {
                         <div className="message-box">
                             <Form>
                                 <FormGroup>
-                                    <Form.Label for="area-message">New message</Form.Label>
+                                    <Form.Label htmlFor="area-message">New message</Form.Label>
                                     <Form.Control id="area-message" as="textarea" rows={3}></Form.Control>
                                 </FormGroup>
                                 <Button className="mt-2" variant="primary">Отправить</Button>
