@@ -1,0 +1,8 @@
+.group-list {
+    width: 300px;
+    overflow-y: scroll;
+}
+
+.chat-window {
+    height: 90vh;
+}
