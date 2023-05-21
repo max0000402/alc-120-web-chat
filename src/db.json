@@ -1,0 +1,44 @@
+{
+  "user": [
+    {
+      "id": 1,
+      "name": "Max",
+      "login": "max00"
+    },
+    {
+      "id": 2,
+      "name": "Artem",
+      "login": "art"
+    },
+    {
+      "id": 3,
+      "name": "Sanya",
+      "login": "sun"
+    }
+  ],
+  "group": [
+    {
+      "id": 1,
+      "name": "First group",
+      "membersId": [1, 2],
+      "icon": "",
+      "messagesId": [1, 2 ]
+    }
+  ],
+  "message": [
+    {
+      "id": 1,
+      "senderId": 1,
+      "payload": "Hello",
+      "createdAt": 1684579702078,
+      "groupId": 1
+    },
+    {
+      "id": 2,
+      "senderId": 2,
+      "payload": "Hi!",
+      "createdAt": 1684579701078,
+      "groupId": 1
+    }
+  ]
+}
