@@ -26,8 +26,17 @@ public class GroupController : ControllerBase
 
     [HttpPost("group")]
     [Authorize]
-    public async Task GroupCreate(GroupRegisterModel newGroupe)
+    public async Task GroupCreate(GroupRegisterModel newGroup)
     {
-        await _groupService.GroupCreate(newGroupe,Convert.ToInt32(User.Identity.Name));
+        await _groupService.GroupCreate(newGroup,Convert.ToInt32(User.Identity.Name));
     }
+
+    [HttpPut("{id}/left")]
+    [Authorize]
+    public async Task GroupLeft(int id)
+    {
+        await _groupService.GroupLeft( Convert.ToInt32(User.Identity.Name), id);
+
+    }
+    
 }

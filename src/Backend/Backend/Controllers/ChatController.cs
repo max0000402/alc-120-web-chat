@@ -3,6 +3,7 @@ using Backend.Hubs;
 using Backend.Hubs.Interfaces;
 using Backend.Models;
 using Backend.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
@@ -22,7 +23,10 @@ public class ChatController : ControllerBase
         _context = context;
     }
 
+    
+    
     [HttpPost("messages")]
+    [Authorize]
     public async Task PostMessage(ChatMessage message)
     {
         var user = await _context.Users
