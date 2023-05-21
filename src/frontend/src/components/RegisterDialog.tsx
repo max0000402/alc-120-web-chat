@@ -3,20 +3,21 @@ import { Form, FormGroup, Modal } from 'react-bootstrap'
 import Button from 'react-bootstrap/Button'
 import { DialogType } from '../common/DialogType'
 import { useAppDispatch } from '../store/hooks'
-import { LoginRequest } from '../viewmodels/auth'
-import { useLoginMutation } from '../services/authService'
+import { RegisterRequest } from '../viewmodels/auth'
+import { useRegisterMutation } from '../services/authService'
 import { setToken } from '../store/features/auth/authSlice'
 
-interface LoginDialogProps extends DialogType {
+interface RegisterDialogProps extends DialogType {
 
 }
 
-export default function LoginDialog(props: LoginDialogProps) {
-    const [login] = useLoginMutation()
+export default function RegisterDialog(props: RegisterDialogProps) {
+    const [register] = useRegisterMutation()
     const dispatch = useAppDispatch()
-    const [state, setState] = useState<LoginRequest>({
+    const [state, setState] = useState<RegisterRequest>({
         login: '',
-        password: ''
+        password: '',
+        name: ''
     })
 
     const updateState = useCallback(<T extends typeof state, K extends keyof T>(key: K, value: T[K]) => {
@@ -25,20 +26,20 @@ export default function LoginDialog(props: LoginDialogProps) {
 
     const submitForm = useCallback(async () => {
         try {
-            const token = await login(state).unwrap()
+            const token = await register(state).unwrap()
             dispatch(setToken(token.token))
+            setState({ login: '', password: '', name: '' })
             props.handleClose()
         } catch (e) {
             console.error(e)
             updateState('password', '')
         }
-
-    }, [props, state])
+    }, [props.handleClose, state])
 
     return (
         <Modal show={props.isOpen} onHide={props.handleClose}>
             <Modal.Header closeButton>
-                <Modal.Title>Login</Modal.Title>
+                <Modal.Title>Register</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <Form>
@@ -47,10 +48,14 @@ export default function LoginDialog(props: LoginDialogProps) {
                         <Form.Control value={state.login} onChange={(e) => updateState('login', e.target.value)} type="text" id="login-input"></Form.Control>
                     </FormGroup>
                     <FormGroup>
+                        <Form.Label htmlFor="login-input">Name</Form.Label>
+                        <Form.Control value={state.name} onChange={(e) => updateState('name', e.target.value)} type="text" id="login-input"></Form.Control>
+                    </FormGroup>
+                    <FormGroup>
                         <Form.Label htmlFor="password-input">Password</Form.Label>
                         <Form.Control value={state.password} onChange={(e) => updateState('password', e.target.value)} type="password" id="password-input"></Form.Control>
                     </FormGroup>
-                    <Button onClick={submitForm} type="button" variant="primary">Login</Button>
+                    <Button onClick={submitForm} type="button" variant="primary">Register</Button>
                 </Form>
             </Modal.Body>
             <Modal.Footer>
@@ -60,4 +65,4 @@ export default function LoginDialog(props: LoginDialogProps) {
             </Modal.Footer>
         </Modal>
     )
- }
+}

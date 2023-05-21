@@ -21,16 +21,16 @@ public class UserService : IUserService
         _context = context;
     }
 
-    public async Task<bool> Register(RegisterModel newUser)
+    public async Task<LoginResponse?> Register(RegisterModel newUser)
     {
         var hash = Convert.ToHexString(GetHash(newUser.Password));
         var user = new User(newUser.Name, hash, newUser.Login);
         _context.Add(user);
         await _context.SaveChangesAsync();
-        return true;
+        return new LoginResponse { Token = GenerateJwtToken(user.Id) };
     }
 
-    public async Task<string?> SignIn(SignInModel currentUser)
+    public async Task<LoginResponse?> SignIn(SignInModel currentUser)
     {
         //var currentHash = currentUser.Password;
 
@@ -41,21 +41,9 @@ public class UserService : IUserService
         }
 
         var currentHash = Convert.ToHexString(GetHash(currentUser.Password));
-        if (existingUser.Password != currentHash)
-        {
-            return null;
-        }
-        
-        var claims = new List<Claim>() { new Claim(ClaimTypes.Name, existingUser.Id.ToString()) };
-        var jwt = new JwtSecurityToken(
-            issuer: AuthOptions.ISSUER,
-            audience: AuthOptions.AUDIENCE,
-            claims: claims,
-            expires: DateTime.UtcNow.Add(TimeSpan.FromMinutes(AuthOptions.LIFETIME)),
-            signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(),
-                SecurityAlgorithms.HmacSha256));
-        var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
-        return encodedJwt;
+        return existingUser.Password != currentHash
+            ? null
+            : new LoginResponse { Token = GenerateJwtToken(existingUser.Id) };
     }
 
     private byte[] GetHash(string password)
@@ -78,6 +66,19 @@ public class UserService : IUserService
             .FirstOrDefaultAsync();
 
         return existingUser;
+    }
+
+    private string GenerateJwtToken(int id)
+    {
+        var claims = new List<Claim>() { new Claim(ClaimTypes.Name, id.ToString()) };
+        var jwt = new JwtSecurityToken(
+            issuer: AuthOptions.ISSUER,
+            audience: AuthOptions.AUDIENCE,
+            claims: claims,
+            expires: DateTime.UtcNow.Add(TimeSpan.FromMinutes(AuthOptions.LIFETIME)),
+            signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(),
+                SecurityAlgorithms.HmacSha256));
+        return new JwtSecurityTokenHandler().WriteToken(jwt);
     }
    
 }
