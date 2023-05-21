@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { baseUrl } from '../common/constants'
 import { GroupDetail } from '../viewmodels/group'
 import { RootState } from '../store'
-import { LoginRequest, LoginResponse } from '../viewmodels/auth'
+import { LoginRequest, LoginResponse, RegisterRequest } from '../viewmodels/auth'
 import { UserDetail } from '../viewmodels/user'
 
 export const authService = createApi({
@@ -16,6 +16,7 @@ export const authService = createApi({
             return headers
         }
     }),
+    tagTypes: ['AuthorizedUser'],
     endpoints: (builder) => ({
         login: builder.mutation<LoginResponse, LoginRequest>({
             query: (credentials) => ({
@@ -23,11 +24,21 @@ export const authService = createApi({
                 method: 'POST',
                 body: credentials,
             }),
+            invalidatesTags: ['AuthorizedUser']
+        }),
+        register: builder.mutation<LoginResponse, RegisterRequest>({
+            query: (credentials) => ({
+                url: 'register',
+                method: 'POST',
+                body: credentials,
+            }),
+            invalidatesTags: ['AuthorizedUser']
         }),
         getCurrentUser: builder.query<UserDetail, void>({
             query: () => 'current',
+            providesTags: ['AuthorizedUser']
         }),
     }),
 })
 
-export const { useLoginMutation, useGetCurrentUserQuery, useLazyGetCurrentUserQuery } = authService
+export const { useLoginMutation, useGetCurrentUserQuery, useRegisterMutation } = authService

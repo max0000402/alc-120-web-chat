@@ -9,13 +9,13 @@ export const store = configureStore({
         auth: authReducer,
         [userService.reducerPath]: userService.reducer,
         [authService.reducerPath]: authService.reducer,
-        // [groupService.reducerPath]: authService.reducer,
+        [groupService.reducerPath]: groupService.reducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware()
             .concat(userService.middleware)
             .concat(authService.middleware)
-            // .concat(groupService.middleware)
+            .concat(groupService.middleware)
 })
 
 export type RootState = ReturnType<typeof store.getState>

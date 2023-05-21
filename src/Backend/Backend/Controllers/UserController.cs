@@ -18,13 +18,13 @@ public class UserController : ControllerBase
     public async Task<IActionResult> Register(RegisterModel newUser)
     {
         var result = await _userService.Register(newUser);
-        return result ? Ok(result) : NotFound();
+        return result != null ? Ok(result) : NotFound();
     }
     [HttpPost("login")]
     public async Task<IActionResult> SignIn(SignInModel currentUser)
     {
         var result = await _userService.SignIn(currentUser);
-        return result != null ? Ok(new LoginResponse { Token = result }) : NotFound("Invalid username or password");
+        return result != null ? Ok(result) : NotFound("Invalid username or password");
     }
 
     [HttpGet("current")]

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import './App.css'
 import Button from 'react-bootstrap/Button'
 import Navbar from 'react-bootstrap/Navbar'
@@ -7,60 +7,63 @@ import Nav from 'react-bootstrap/Nav'
 import { Card, Col, Form, FormGroup, ListGroup, Row } from 'react-bootstrap'
 import ChatMembersDialog from './components/ChatMembersDialog'
 import LoginDialog from './components/LoginDialog'
-import { useLazyGetCurrentUserQuery, useLoginMutation } from './services/authService'
-import { useAppDispatch } from './store/hooks'
-import { setToken } from './store/features/auth/authSlice'
+import { useAppDispatch, useAppSelector } from './store/hooks'
+import RegisterDialog from './components/RegisterDialog'
+import { useGetCurrentUserQuery } from './services/authService'
+import { isUserAuth } from './store/features/auth/selectors'
+import { useGetGroupForCurrentUserQuery } from './services/groupService'
+import { logout } from './store/features/auth/authSlice'
 
 function App() {
+    const isAuth = useAppSelector(isUserAuth)
+    const { data: currentUser } = useGetCurrentUserQuery(undefined, { skip: !isAuth })
+    const { data: groups } = useGetGroupForCurrentUserQuery(undefined, { skip: !isAuth })
 
     const [isMemberDialogOpen, setMemberDialogOpen] = useState(false)
     const [isLoginDialogOpen, setLoginDialogOpen] = useState(false)
+    const [isRegisterDialogOpen, setRegisterDialogOpen] = useState(false)
 
     const handleMemberDialogClose = useCallback(() => setMemberDialogOpen(false), [])
     const handleLoginDialogClose = useCallback(() => setLoginDialogOpen(false), [])
+    const handleRegisterDialogClose = useCallback(() => setRegisterDialogOpen(false), [])
 
     const dispatch = useAppDispatch()
-    const [login, { isLoading }] = useLoginMutation()
-    const [trigger, result] = useLazyGetCurrentUserQuery()
-
-    useEffect(() => {
-        async function hook() {
-            const token = await login({ login: 'max00', password: 'password' }).unwrap()
-            dispatch(setToken(token.token))
-        }
-
-        hook()
-    }, [])
 
     return (
         <>
-            <Button onClick={() => {
-                trigger().then(data => console.log(data))
-            }}>Click</Button>
-            <ChatMembersDialog name="Dialog 1" members={[]} isOpen={isMemberDialogOpen} handleClose={handleMemberDialogClose} />
-            <LoginDialog isOpen={isLoginDialogOpen} handleClose={handleLoginDialogClose} />
-            <Navbar className="mb-2" bg='light' expand='lg'>
+            <ChatMembersDialog name="Dialog 1" members={[]} isOpen={isMemberDialogOpen}
+                               handleClose={handleMemberDialogClose}/>
+            <LoginDialog isOpen={isLoginDialogOpen} handleClose={handleLoginDialogClose}/>
+            <RegisterDialog isOpen={isRegisterDialogOpen} handleClose={handleRegisterDialogClose}/>
+            <Navbar className="mb-2" bg="light" expand="lg">
                 <Container>
                     <Navbar.Brand>MyRoom</Navbar.Brand>
-                    <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                    <Navbar.Toggle aria-controls="basic-navbar-nav"/>
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav>
                             <Nav.Link as="span">ChatName</Nav.Link>
                         </Nav>
                         <Nav>
-                            <Nav.Link onClick={() => setMemberDialogOpen(true)}>6 members(open modal on click)</Nav.Link>
+                            <Nav.Link onClick={() => setMemberDialogOpen(true)}>6 members(open modal on
+                                click)</Nav.Link>
                         </Nav>
-                        <Nav>
-                            <Nav.Link onClick={() => setLoginDialogOpen(true)}>Login/Username</Nav.Link>
-                        </Nav>
+                        {isAuth && currentUser !== undefined
+                            ? (<Nav>
+                                <Nav.Link as="span">{currentUser.name}</Nav.Link>
+                                <Nav.Link onClick={() => dispatch(logout())}>Logout</Nav.Link>
+                            </Nav>)
+                            : (<Nav>
+                                <Nav.Link onClick={() => setLoginDialogOpen(true)}>Login</Nav.Link>
+                                <Nav.Link onClick={() => setRegisterDialogOpen(true)}>Register</Nav.Link>
+                            </Nav>)}
                     </Navbar.Collapse>
                 </Container>
             </Navbar>
             <div className="d-flex w-100 group-list">
                 <ListGroup className="group-list">
-                    <ListGroup.Item action>Chat 1</ListGroup.Item>
-                    <ListGroup.Item action>Chat 2</ListGroup.Item>
-                    <ListGroup.Item action>Chat 3</ListGroup.Item>
+                    { groups !== undefined && groups.map(el => (
+                        <ListGroup.Item action key={el.id}>{el.name}</ListGroup.Item>
+                    )) }
                 </ListGroup>
                 <Container>
                     <div className="d-flex flex-column justify-content-between chat-window">
