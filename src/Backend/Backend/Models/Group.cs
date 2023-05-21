@@ -10,9 +10,8 @@ public class Group
 
     private Group() { }
 
-    public Group(int id, string name)
+    public Group(string name)
     {
-        Id = id;
         Name = name;
     }
     

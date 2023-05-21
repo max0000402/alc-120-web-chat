@@ -22,6 +22,12 @@ public class GroupController : ControllerBase
     public async Task<List<GroupDetail>> Current()
     {
         return await _groupService.GetGroupsForUser(Convert.ToInt32(User.Identity.Name));
+    }
 
+    [HttpPost("group")]
+    [Authorize]
+    public async Task GroupCreate(GroupRegisterModel newGroupe)
+    {
+        await _groupService.GroupCreate(newGroupe,Convert.ToInt32(User.Identity.Name));
     }
 }
