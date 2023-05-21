@@ -9,8 +9,6 @@ public class MessageConfiguration: IEntityTypeConfiguration<Message>
     public void Configure(EntityTypeBuilder<Message> builder)
     {
         builder.HasKey(message => message.Id);
-        builder.HasKey(message => message.GroupId);
-        builder.HasKey(message => message.SenderId);
         builder.Property(message => message.CreatedAt).IsRequired();
         builder.Property(message => message.Payload).IsRequired();
 

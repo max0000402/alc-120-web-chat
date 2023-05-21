@@ -14,9 +14,8 @@ public class Message
 
     private Message() { }
 
-    public Message(int id, int senderId, string payload, DateTime createdAt, int groupId)
+    public Message(int senderId, int groupId, string payload, DateTime createdAt)
     {
-        Id = id;
         SenderId = senderId;
         Payload = payload;
         CreatedAt = createdAt;

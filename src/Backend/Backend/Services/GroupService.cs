@@ -42,4 +42,18 @@ public class GroupService : IGroupService
         _context.Add(group);
         await _context.SaveChangesAsync();
     }
+
+    public async Task<GroupDetail?> Detail(int groupId, int userId)
+    {
+        var groups = await GetGroupsForUser(userId);
+        return groups
+            .Where(group => group.Id == groupId)
+            .Select(group => new GroupDetail
+            {
+                Id = group.Id,
+                Name = group.Name,
+                MembersId = group.MembersId
+            })
+            .FirstOrDefault();
+    }
 }

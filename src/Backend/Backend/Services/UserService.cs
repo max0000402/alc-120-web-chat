@@ -61,7 +61,8 @@ public class UserService : IUserService
             .Select(user => new DetailUserResponse
             {
                 Name = user.Name,
-                Id = user.Id
+                Id = user.Id,
+                Login = user.Login
             })
             .FirstOrDefaultAsync();
 

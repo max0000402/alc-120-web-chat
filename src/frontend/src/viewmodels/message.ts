@@ -5,3 +5,8 @@ export interface Message {
     createdAt: number,
     groupId: number
 }
+
+export interface MessageRequest {
+    roomId: number,
+    message: string
+}

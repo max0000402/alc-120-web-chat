@@ -13,3 +13,12 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.navbar-brand {
+  cursor: pointer;
+}
+
+.messages-list {
+  overflow-y: auto;
+  max-height: 90vh;
+}
