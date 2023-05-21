@@ -42,6 +42,19 @@ public class GroupService : IGroupService
         _context.Add(group);
         await _context.SaveChangesAsync();
     }
+    public async Task GroupLeft(int userId, int groupId)
+    {
+        var currentGroup = await _context.Groups
+            .Where(group => group.Id == groupId)
+            .Include(group => group.Members)
+            .FirstOrDefaultAsync();
+        if (currentGroup == null)
+        {
+            return;
+        }
+        currentGroup.Members.RemoveAll(user => user.Id == userId);
+        await _context.SaveChangesAsync();
+    }
 
     public async Task<GroupDetail?> Detail(int groupId, int userId)
     {
