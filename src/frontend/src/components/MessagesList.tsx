@@ -1,5 +1,5 @@
 import { Card, Col, Row } from 'react-bootstrap'
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useGetMessagesQuery } from '../services/chatService'
 import { useAppSelector } from '../store/hooks'
 import { isUserAuth } from '../store/features/auth/selectors'
@@ -11,7 +11,17 @@ export default function MessagesList() {
     const selectedGroup = useAppSelector(state => state.chat.selectedGroup)
     const { data: messages } = useGetMessagesQuery(selectedGroup!, { skip: !isAuth || selectedGroup === undefined })
 
-    if (!selectedGroup) {
+    const endRef = useRef<HTMLDivElement>(null)
+
+    useEffect(() => {
+        if (messages === undefined) {
+            return
+        }
+
+        endRef.current?.scrollIntoView({ behavior: 'smooth' })
+    }, [messages])
+
+    if (!isAuth || !selectedGroup) {
         return (
             <Row className="messages-list gap-2">
 
@@ -33,6 +43,7 @@ export default function MessagesList() {
                     </Card>
                 </Col>
             ))}
+            <div ref={endRef} />
         </Row>
     )
 }

@@ -35,8 +35,6 @@ export const chatService = createApi({
             ) {
                 const token = (getState() as RootState).auth.token
 
-                console.log('token', token)
-
                 let connection = new signalR.HubConnectionBuilder()
                     .withUrl("/chathub", {
                         accessTokenFactory: () => token
@@ -47,6 +45,7 @@ export const chatService = createApi({
                     await cacheDataLoaded
                     connection.on("Receive", (message) => {
                         if (!message) { return }
+                        // if (message.groupId !== arg) { return }
 
                         updateCachedData((draft) => {
                             draft.push(message)

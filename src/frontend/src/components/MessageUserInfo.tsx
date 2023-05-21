@@ -21,7 +21,7 @@ export default function MessageUserInfo(props: MessageUserInfoProps) {
 
     return (
         <>
-            <p>{data.name}({data.login})</p>
+            <span>{data.name}({data.login})</span>
         </>
     )
 }

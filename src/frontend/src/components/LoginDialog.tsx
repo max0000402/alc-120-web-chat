@@ -50,10 +50,10 @@ export default function LoginDialog(props: LoginDialogProps) {
                         <Form.Label htmlFor="password-input">Password</Form.Label>
                         <Form.Control value={state.password} onChange={(e) => updateState('password', e.target.value)} type="password" id="password-input"></Form.Control>
                     </FormGroup>
-                    <Button onClick={submitForm} type="button" variant="primary">Login</Button>
                 </Form>
             </Modal.Body>
             <Modal.Footer>
+                <Button onClick={submitForm} type="button" variant="primary">Login</Button>
                 <Button variant="secondary" onClick={props.handleClose}>
                     Close
                 </Button>

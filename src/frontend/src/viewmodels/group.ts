@@ -4,3 +4,8 @@ export interface GroupDetail {
     membersId: number[],
     messagesId: []
 }
+
+export interface GroupCreateRequest {
+    name: string,
+    membersId: number[]
+}

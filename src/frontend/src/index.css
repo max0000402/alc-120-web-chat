@@ -22,3 +22,26 @@ code {
   overflow-y: auto;
   max-height: 90vh;
 }
+
+textarea.form-control {
+  resize: none;
+}
+
+.icon {
+  width: 32px;
+  height: 32px;
+  margin-right: 8px;
+}
+
+.landing-title {
+  text-align: center;
+  font-weight: 600;
+  max-width: 630px;
+  margin: 0 auto 64px;
+}
+
+.landing-title > svg {
+  margin-left: 8px;
+  width: 32px;
+  height: 32px;
+}

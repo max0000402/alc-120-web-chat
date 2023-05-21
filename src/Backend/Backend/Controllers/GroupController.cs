@@ -29,6 +29,7 @@ public class GroupController : ControllerBase
     public async Task GroupCreate(GroupRegisterModel newGroup)
     {
         await _groupService.GroupCreate(newGroup,Convert.ToInt32(User.Identity.Name));
+        
     }
 
     [HttpPut("{id}/left")]

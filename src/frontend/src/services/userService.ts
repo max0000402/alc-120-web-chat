@@ -12,4 +12,4 @@ export const userService = createApi({
     }),
 })
 
-export const { useGetUserByIdQuery } = userService
+export const { useGetUserByIdQuery, useLazyGetUserByIdQuery } = userService
