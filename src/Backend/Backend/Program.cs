@@ -1,4 +1,5 @@
 using Backend.DataBase;
+using Backend.Hubs;
 using Backend.Services;
 using Backend.Services.Interfaces;
 using Backend.Settings;
@@ -67,7 +68,7 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 });
-
+builder.Services.AddSignalR();
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IGroupService, GroupService>();
 
@@ -88,4 +89,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<ChatHub>("/chat");
+
 app.Run();

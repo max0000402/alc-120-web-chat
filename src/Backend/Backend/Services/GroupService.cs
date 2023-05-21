@@ -31,4 +31,15 @@ public class GroupService : IGroupService
                 })
             .ToListAsync();
     }
+
+    public async Task GroupCreate(GroupRegisterModel newGroup, int id)
+    {
+        var group = new Group(newGroup.Name);
+        var users = await _context.Users.Where(user => newGroup.MembersId.Contains(user.Id)).ToListAsync();
+        group.Members.AddRange(users);
+        var owner = await _context.Users.Where(user => user.Id == id).FirstOrDefaultAsync();
+        group.Members.Add(owner);
+        _context.Add(group);
+        await _context.SaveChangesAsync();
+    }
 }
