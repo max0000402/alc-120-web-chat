@@ -1,18 +1,13 @@
-import { createSlice } from '@reduxjs/toolkit'
-import { fetchUserById } from './fetchUserById'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { UserDetail } from '../../../viewmodels/user'
 import { Status } from '../../helpers'
 
 export interface AuthState {
-    user?: UserDetail,
     token: string,
-    status: Status
 }
 
 const initialState: AuthState = {
-    user: undefined,
     token: '',
-    status: 'pending'
 }
 
 export const authSlice = createSlice({
@@ -20,29 +15,14 @@ export const authSlice = createSlice({
     initialState,
     reducers: {
         logout: (state) => {
-            state.user = undefined
-            state.status = 'fulfilled'
             state.token = ''
+        },
+        setToken: (state, { payload }: PayloadAction<string>) => {
+            state.token = payload
         }
     },
-    extraReducers: (builder) => {
-        builder.addCase(fetchUserById.fulfilled, (state, action) => {
-            state.user = {
-                name: action.payload.name,
-                login: action.payload.login,
-                id: action.payload.id
-            }
-            state.status = 'fulfilled'
-        })
-        builder.addCase(fetchUserById.rejected, (state) => {
-            state.status = 'rejected'
-        })
-        builder.addCase(fetchUserById.pending, (state) => {
-            state.status = 'pending'
-        })
-    }
 })
 
-export const {  } = authSlice.actions
+export const { setToken, logout } = authSlice.actions
 
 export default authSlice.reducer
